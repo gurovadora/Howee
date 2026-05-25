@@ -186,6 +186,7 @@ function Stepper({
   suffix,
   min,
   max,
+  tone,
   onChange,
 }: {
   label: string;
@@ -193,10 +194,11 @@ function Stepper({
   suffix: string;
   min: number;
   max: number;
+  tone: "blue" | "pink" | "yellow" | "lilac";
   onChange: (value: number) => void;
 }) {
   return (
-    <View style={styles.controlRow}>
+    <View style={[styles.card, styles.controlRow, toneStyles[tone]]}>
       <View>
         <Text style={styles.controlLabel}>{label}</Text>
         <Text style={styles.controlValue}>
@@ -225,15 +227,17 @@ function SegmentedControl<T extends string>({
   label,
   value,
   options,
+  tone,
   onChange,
 }: {
   label: string;
   value: T;
   options: Array<{ label: string; value: T }>;
+  tone: "blue" | "pink" | "yellow" | "lilac";
   onChange: (value: T) => void;
 }) {
   return (
-    <View style={styles.segmentBlock}>
+    <View style={[styles.card, styles.segmentBlock, toneStyles[tone]]}>
       <Text style={styles.controlLabel}>{label}</Text>
       <View style={styles.segmentGroup}>
         {options.map((option) => {
@@ -259,14 +263,19 @@ function SegmentedControl<T extends string>({
 function Toggle({
   label,
   value,
+  tone,
   onChange,
 }: {
   label: string;
   value: boolean;
+  tone: "blue" | "pink" | "yellow" | "lilac";
   onChange: (value: boolean) => void;
 }) {
   return (
-    <Pressable style={styles.toggleRow} onPress={() => onChange(!value)}>
+    <Pressable
+      style={[styles.card, styles.toggleRow, toneStyles[tone]]}
+      onPress={() => onChange(!value)}
+    >
       <Text style={styles.controlLabel}>{label}</Text>
       <View style={[styles.toggle, value && styles.toggleActive]}>
         <View style={[styles.toggleKnob, value && styles.toggleKnobActive]} />
@@ -360,6 +369,7 @@ export default function App() {
             suffix="glasses"
             min={0}
             max={12}
+            tone="blue"
             onChange={(value) => update("waterGlasses", value)}
           />
           <Stepper
@@ -368,6 +378,7 @@ export default function App() {
             suffix="hours"
             min={0}
             max={14}
+            tone="pink"
             onChange={(value) => update("sleepHours", value)}
           />
           <Stepper
@@ -376,6 +387,7 @@ export default function App() {
             suffix="hours"
             min={0}
             max={16}
+            tone="yellow"
             onChange={(value) => update("workHours", value)}
           />
           <Stepper
@@ -384,6 +396,7 @@ export default function App() {
             suffix="today"
             min={0}
             max={6}
+            tone="lilac"
             onChange={(value) => update("energyDrinks", value)}
           />
 
@@ -391,28 +404,33 @@ export default function App() {
             label="Work/life stress"
             value={checkIn.stress}
             options={stressOptions}
+            tone="pink"
             onChange={(value) => update("stress", value)}
           />
           <Toggle
             label="Ate today"
             value={checkIn.ateToday}
+            tone="yellow"
             onChange={(value) => update("ateToday", value)}
           />
           <SegmentedControl
             label="Food quality"
             value={checkIn.food}
             options={foodOptions}
+            tone="blue"
             onChange={(value) => update("food", value)}
           />
           <SegmentedControl
             label="Anxiety"
             value={checkIn.anxiety}
             options={anxietyOptions}
+            tone="lilac"
             onChange={(value) => update("anxiety", value)}
           />
           <Toggle
             label="Had real rest"
             value={checkIn.rested}
+            tone="pink"
             onChange={(value) => update("rested", value)}
           />
         </View>
@@ -421,6 +439,21 @@ export default function App() {
   );
 }
 
+const toneStyles = StyleSheet.create({
+  blue: {
+    backgroundColor: "#dce9ff",
+  },
+  pink: {
+    backgroundColor: "#f7dce7",
+  },
+  yellow: {
+    backgroundColor: "#ffe9a8",
+  },
+  lilac: {
+    backgroundColor: "#efe1fb",
+  },
+});
+
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
@@ -428,14 +461,14 @@ const styles = StyleSheet.create({
   },
   page: {
     paddingBottom: 36,
-    paddingHorizontal: 20,
+    paddingHorizontal: 18,
     paddingTop: 18,
   },
   header: {
     alignItems: "center",
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 22,
+    marginBottom: 18,
   },
   logo: {
     color: "#2d2a35",
@@ -472,51 +505,51 @@ const styles = StyleSheet.create({
     color: "#2d2a35",
   },
   howeePanel: {
-    borderColor: "#ffffff",
-    borderRadius: 28,
-    borderWidth: 2,
-    flexDirection: "row",
-    gap: 18,
-    marginBottom: 16,
+    borderRadius: 34,
+    gap: 14,
+    marginBottom: 18,
+    minHeight: 330,
     overflow: "hidden",
-    padding: 20,
+    paddingHorizontal: 22,
+    paddingVertical: 26,
     position: "relative",
   },
   panelOrbOne: {
-    backgroundColor: "rgba(255, 255, 255, 0.42)",
-    borderRadius: 48,
-    height: 96,
+    backgroundColor: "rgba(255, 255, 255, 0.38)",
+    borderRadius: 80,
+    height: 160,
     position: "absolute",
-    right: -22,
-    top: -28,
-    width: 96,
+    right: -54,
+    top: -54,
+    width: 160,
   },
   panelOrbTwo: {
-    backgroundColor: "rgba(255, 255, 255, 0.32)",
-    borderRadius: 36,
-    bottom: -20,
-    height: 72,
-    left: 34,
+    backgroundColor: "rgba(255, 255, 255, 0.38)",
+    borderRadius: 70,
+    bottom: -46,
+    height: 140,
+    left: -34,
     position: "absolute",
-    width: 72,
+    width: 140,
   },
   creatureWrap: {
     alignItems: "center",
+    alignSelf: "center",
     justifyContent: "center",
-    width: 122,
+    width: 220,
   },
   creatureBody: {
     alignItems: "center",
-    borderRadius: 42,
-    borderTopLeftRadius: 56,
-    borderTopRightRadius: 48,
-    borderBottomLeftRadius: 48,
-    borderBottomRightRadius: 34,
-    borderWidth: 3,
-    height: 112,
+    borderTopLeftRadius: 98,
+    borderTopRightRadius: 76,
+    borderBottomLeftRadius: 88,
+    borderBottomRightRadius: 58,
+    borderWidth: 4,
+    height: 178,
     justifyContent: "center",
     position: "relative",
-    width: 104,
+    transform: [{ rotate: "-3deg" }],
+    width: 180,
   },
   creatureEar: {
     backgroundColor: "#ffffff",
@@ -524,17 +557,17 @@ const styles = StyleSheet.create({
     height: 20,
     opacity: 0.8,
     position: "absolute",
-    top: 18,
+    top: 34,
     width: 20,
   },
   creatureEarLeft: {
-    left: 22,
+    left: 44,
   },
   creatureEarRight: {
-    right: 22,
+    right: 44,
   },
   creatureFace: {
-    fontSize: 28,
+    fontSize: 42,
     fontWeight: "800",
   },
   creatureShadow: {
@@ -542,11 +575,11 @@ const styles = StyleSheet.create({
     height: 10,
     marginTop: 10,
     opacity: 0.18,
-    width: 78,
+    width: 132,
   },
   howeeCopy: {
-    flex: 1,
-    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 1,
   },
   stateLabel: {
     fontSize: 17,
@@ -555,7 +588,7 @@ const styles = StyleSheet.create({
   },
   score: {
     color: "#2d2a35",
-    fontSize: 40,
+    fontSize: 54,
     fontWeight: "900",
     marginBottom: 8,
   },
@@ -568,7 +601,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     gap: 8,
-    marginBottom: 24,
+    marginBottom: 18,
   },
   signalPill: {
     backgroundColor: "#ffffff",
@@ -584,7 +617,10 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
   sectionHeader: {
-    marginBottom: 14,
+    backgroundColor: "#ffffff",
+    borderRadius: 24,
+    marginBottom: 12,
+    padding: 18,
   },
   sectionTitle: {
     color: "#2d2a35",
@@ -598,17 +634,19 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   controls: {
-    gap: 12,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 10,
+  },
+  card: {
+    borderRadius: 24,
+    minHeight: 118,
+    padding: 16,
+    width: "48.5%",
   },
   controlRow: {
-    alignItems: "center",
-    backgroundColor: "#ffffff",
-    borderColor: "#eaddea",
-    borderRadius: 20,
-    borderWidth: 1,
-    flexDirection: "row",
+    alignItems: "flex-start",
     justifyContent: "space-between",
-    padding: 16,
   },
   controlLabel: {
     color: "#2d2a35",
@@ -623,6 +661,7 @@ const styles = StyleSheet.create({
   stepper: {
     flexDirection: "row",
     gap: 8,
+    marginTop: 16,
   },
   stepButton: {
     alignItems: "center",
@@ -639,11 +678,7 @@ const styles = StyleSheet.create({
     lineHeight: 27,
   },
   segmentBlock: {
-    backgroundColor: "#ffffff",
-    borderColor: "#eaddea",
-    borderRadius: 20,
-    borderWidth: 1,
-    padding: 16,
+    justifyContent: "space-between",
   },
   segmentGroup: {
     flexDirection: "row",
@@ -652,7 +687,7 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
   segment: {
-    backgroundColor: "#f7f1f7",
+    backgroundColor: "rgba(255, 255, 255, 0.62)",
     borderRadius: 14,
     paddingHorizontal: 12,
     paddingVertical: 10,
@@ -669,20 +704,15 @@ const styles = StyleSheet.create({
     color: "#2d2a35",
   },
   toggleRow: {
-    alignItems: "center",
-    backgroundColor: "#ffffff",
-    borderColor: "#eaddea",
-    borderRadius: 20,
-    borderWidth: 1,
-    flexDirection: "row",
+    alignItems: "flex-start",
     justifyContent: "space-between",
-    padding: 16,
   },
   toggle: {
     backgroundColor: "#e9e0eb",
     borderRadius: 999,
     height: 32,
     justifyContent: "center",
+    marginTop: 18,
     padding: 3,
     width: 58,
   },
