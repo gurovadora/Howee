@@ -126,8 +126,9 @@ function getHoweeState(score: number) {
       label: "Steady",
       face: "^-^",
       mood: "Howee feels grounded and cared for.",
-      color: "#2f7c6f",
-      background: "#dff2ea",
+      color: "#5f79d6",
+      background: "#dce9ff",
+      body: "#f8d8e6",
     };
   }
 
@@ -136,8 +137,9 @@ function getHoweeState(score: number) {
       label: "Holding up",
       face: "o_o",
       mood: "Howee is okay, but the day is taking energy.",
-      color: "#9a6a1f",
-      background: "#f7e7c2",
+      color: "#9073c7",
+      background: "#efe1fb",
+      body: "#ffe9a8",
     };
   }
 
@@ -146,8 +148,9 @@ function getHoweeState(score: number) {
       label: "Drained",
       face: "-_-",
       mood: "Howee needs water, food, rest, or a softer pace.",
-      color: "#a24c2a",
-      background: "#f5d3c4",
+      color: "#c06f82",
+      background: "#f7dce7",
+      body: "#dce9ff",
     };
   }
 
@@ -155,8 +158,9 @@ function getHoweeState(score: number) {
     label: "Overloaded",
     face: "x_x",
     mood: "Howee is showing a real overload signal.",
-    color: "#8f2e3b",
-    background: "#f0c7ce",
+    color: "#9d596b",
+    background: "#f4cdd8",
+    body: "#ffe9a8",
   };
 }
 
@@ -308,8 +312,17 @@ export default function App() {
         </View>
 
         <View style={[styles.howeePanel, { backgroundColor: howee.background }]}>
+          <View style={styles.panelOrbOne} />
+          <View style={styles.panelOrbTwo} />
           <View style={styles.creatureWrap}>
-            <View style={[styles.creatureBody, { borderColor: howee.color }]}>
+            <View
+              style={[
+                styles.creatureBody,
+                { backgroundColor: howee.body, borderColor: howee.color },
+              ]}
+            >
+              <View style={[styles.creatureEar, styles.creatureEarLeft]} />
+              <View style={[styles.creatureEar, styles.creatureEarRight]} />
               <Text style={[styles.creatureFace, { color: howee.color }]}>{howee.face}</Text>
             </View>
             <View style={[styles.creatureShadow, { backgroundColor: howee.color }]} />
@@ -411,7 +424,7 @@ export default function App() {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: "#f8f4ee",
+    backgroundColor: "#edf4ff",
   },
   page: {
     paddingBottom: 36,
@@ -425,43 +438,67 @@ const styles = StyleSheet.create({
     marginBottom: 22,
   },
   logo: {
-    color: "#222831",
+    color: "#2d2a35",
     fontSize: 30,
     fontWeight: "800",
   },
   subtitle: {
-    color: "#68717a",
+    color: "#7e7b8a",
     fontSize: 14,
     marginTop: 3,
   },
   modeSwitch: {
-    backgroundColor: "#e8ded2",
-    borderRadius: 8,
+    backgroundColor: "#ffffff",
+    borderColor: "#e7ddec",
+    borderRadius: 14,
+    borderWidth: 1,
     flexDirection: "row",
     padding: 4,
   },
   modeButton: {
-    borderRadius: 7,
+    borderRadius: 11,
     paddingHorizontal: 12,
     paddingVertical: 8,
   },
   modeButtonActive: {
-    backgroundColor: "#222831",
+    backgroundColor: "#f0c6d6",
   },
   modeText: {
-    color: "#52616b",
+    color: "#7e7b8a",
     fontSize: 13,
     fontWeight: "700",
   },
   modeTextActive: {
-    color: "#ffffff",
+    color: "#2d2a35",
   },
   howeePanel: {
-    borderRadius: 8,
+    borderColor: "#ffffff",
+    borderRadius: 28,
+    borderWidth: 2,
     flexDirection: "row",
     gap: 18,
     marginBottom: 16,
+    overflow: "hidden",
     padding: 20,
+    position: "relative",
+  },
+  panelOrbOne: {
+    backgroundColor: "rgba(255, 255, 255, 0.42)",
+    borderRadius: 48,
+    height: 96,
+    position: "absolute",
+    right: -22,
+    top: -28,
+    width: 96,
+  },
+  panelOrbTwo: {
+    backgroundColor: "rgba(255, 255, 255, 0.32)",
+    borderRadius: 36,
+    bottom: -20,
+    height: 72,
+    left: 34,
+    position: "absolute",
+    width: 72,
   },
   creatureWrap: {
     alignItems: "center",
@@ -470,12 +507,31 @@ const styles = StyleSheet.create({
   },
   creatureBody: {
     alignItems: "center",
-    backgroundColor: "#fffaf2",
-    borderRadius: 56,
-    borderWidth: 4,
+    borderRadius: 42,
+    borderTopLeftRadius: 56,
+    borderTopRightRadius: 48,
+    borderBottomLeftRadius: 48,
+    borderBottomRightRadius: 34,
+    borderWidth: 3,
     height: 112,
     justifyContent: "center",
+    position: "relative",
     width: 104,
+  },
+  creatureEar: {
+    backgroundColor: "#ffffff",
+    borderRadius: 999,
+    height: 20,
+    opacity: 0.8,
+    position: "absolute",
+    top: 18,
+    width: 20,
+  },
+  creatureEarLeft: {
+    left: 22,
+  },
+  creatureEarRight: {
+    right: 22,
   },
   creatureFace: {
     fontSize: 28,
@@ -498,13 +554,13 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   score: {
-    color: "#222831",
+    color: "#2d2a35",
     fontSize: 40,
     fontWeight: "900",
     marginBottom: 8,
   },
   mood: {
-    color: "#3f4952",
+    color: "#5b5868",
     fontSize: 16,
     lineHeight: 22,
   },
@@ -516,14 +572,14 @@ const styles = StyleSheet.create({
   },
   signalPill: {
     backgroundColor: "#ffffff",
-    borderColor: "#e5dbcf",
+    borderColor: "#eaddea",
     borderRadius: 999,
     borderWidth: 1,
     paddingHorizontal: 12,
     paddingVertical: 7,
   },
   signalText: {
-    color: "#52616b",
+    color: "#6e6a7d",
     fontSize: 13,
     fontWeight: "700",
   },
@@ -531,12 +587,12 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
   sectionTitle: {
-    color: "#222831",
+    color: "#2d2a35",
     fontSize: 23,
     fontWeight: "800",
   },
   sectionNote: {
-    color: "#68717a",
+    color: "#7e7b8a",
     fontSize: 15,
     lineHeight: 21,
     marginTop: 4,
@@ -547,20 +603,20 @@ const styles = StyleSheet.create({
   controlRow: {
     alignItems: "center",
     backgroundColor: "#ffffff",
-    borderColor: "#eadfd1",
-    borderRadius: 8,
+    borderColor: "#eaddea",
+    borderRadius: 20,
     borderWidth: 1,
     flexDirection: "row",
     justifyContent: "space-between",
     padding: 16,
   },
   controlLabel: {
-    color: "#222831",
+    color: "#2d2a35",
     fontSize: 15,
     fontWeight: "800",
   },
   controlValue: {
-    color: "#68717a",
+    color: "#7e7b8a",
     fontSize: 14,
     marginTop: 4,
   },
@@ -570,22 +626,22 @@ const styles = StyleSheet.create({
   },
   stepButton: {
     alignItems: "center",
-    backgroundColor: "#222831",
-    borderRadius: 8,
+    backgroundColor: "#dce9ff",
+    borderRadius: 14,
     height: 42,
     justifyContent: "center",
     width: 42,
   },
   stepText: {
-    color: "#ffffff",
+    color: "#5f79d6",
     fontSize: 24,
     fontWeight: "700",
     lineHeight: 27,
   },
   segmentBlock: {
     backgroundColor: "#ffffff",
-    borderColor: "#eadfd1",
-    borderRadius: 8,
+    borderColor: "#eaddea",
+    borderRadius: 20,
     borderWidth: 1,
     padding: 16,
   },
@@ -596,34 +652,34 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
   segment: {
-    backgroundColor: "#f4ede4",
-    borderRadius: 8,
+    backgroundColor: "#f7f1f7",
+    borderRadius: 14,
     paddingHorizontal: 12,
     paddingVertical: 10,
   },
   segmentActive: {
-    backgroundColor: "#2f7c6f",
+    backgroundColor: "#f0c6d6",
   },
   segmentText: {
-    color: "#52616b",
+    color: "#6e6a7d",
     fontSize: 14,
     fontWeight: "700",
   },
   segmentTextActive: {
-    color: "#ffffff",
+    color: "#2d2a35",
   },
   toggleRow: {
     alignItems: "center",
     backgroundColor: "#ffffff",
-    borderColor: "#eadfd1",
-    borderRadius: 8,
+    borderColor: "#eaddea",
+    borderRadius: 20,
     borderWidth: 1,
     flexDirection: "row",
     justifyContent: "space-between",
     padding: 16,
   },
   toggle: {
-    backgroundColor: "#d6cbbd",
+    backgroundColor: "#e9e0eb",
     borderRadius: 999,
     height: 32,
     justifyContent: "center",
@@ -631,7 +687,7 @@ const styles = StyleSheet.create({
     width: 58,
   },
   toggleActive: {
-    backgroundColor: "#2f7c6f",
+    backgroundColor: "#f0c6d6",
   },
   toggleKnob: {
     backgroundColor: "#ffffff",

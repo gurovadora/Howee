@@ -1,0 +1,602 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Howee Preview</title>
+    <style>
+      :root {
+        color: #2d2a35;
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: #edf4ff;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: #edf4ff;
+      }
+
+      main {
+        margin: 0 auto;
+        max-width: 440px;
+        min-height: 100vh;
+        padding: 18px 20px 36px;
+      }
+
+      header {
+        align-items: center;
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 22px;
+      }
+
+      h1,
+      h2,
+      p {
+        margin: 0;
+      }
+
+      h1 {
+        font-size: 30px;
+        font-weight: 800;
+      }
+
+      .subtitle {
+        color: #7e7b8a;
+        font-size: 14px;
+        margin-top: 3px;
+      }
+
+      .mode-switch {
+        background: #ffffff;
+        border: 1px solid #e7ddec;
+        border-radius: 14px;
+        display: flex;
+        padding: 4px;
+      }
+
+      button {
+        border: 0;
+        cursor: pointer;
+        font: inherit;
+      }
+
+      .mode-button {
+        background: transparent;
+        border-radius: 11px;
+        color: #7e7b8a;
+        font-size: 13px;
+        font-weight: 700;
+        padding: 8px 12px;
+      }
+
+      .mode-button.active {
+        background: #f0c6d6;
+        color: #2d2a35;
+      }
+
+      .howee-panel {
+        align-items: center;
+        border: 2px solid #ffffff;
+        border-radius: 28px;
+        display: flex;
+        gap: 18px;
+        margin-bottom: 16px;
+        overflow: hidden;
+        padding: 20px;
+        position: relative;
+        transition: background 160ms ease;
+      }
+
+      .panel-orb-one,
+      .panel-orb-two {
+        background: rgba(255, 255, 255, 0.38);
+        border-radius: 999px;
+        position: absolute;
+      }
+
+      .panel-orb-one {
+        height: 96px;
+        right: -22px;
+        top: -28px;
+        width: 96px;
+      }
+
+      .panel-orb-two {
+        bottom: -20px;
+        height: 72px;
+        left: 34px;
+        width: 72px;
+      }
+
+      .creature-wrap {
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        width: 122px;
+      }
+
+      .creature-body {
+        align-items: center;
+        background: #f8d8e6;
+        border: 4px solid currentColor;
+        border-bottom-left-radius: 48px;
+        border-bottom-right-radius: 34px;
+        border-top-left-radius: 56px;
+        border-top-right-radius: 48px;
+        display: flex;
+        height: 112px;
+        justify-content: center;
+        position: relative;
+        width: 104px;
+      }
+
+      .creature-ear {
+        background: #ffffff;
+        border-radius: 999px;
+        height: 20px;
+        opacity: 0.8;
+        position: absolute;
+        top: 18px;
+        width: 20px;
+      }
+
+      .creature-ear.left {
+        left: 22px;
+      }
+
+      .creature-ear.right {
+        right: 22px;
+      }
+
+      .creature-face {
+        font-size: 28px;
+        font-weight: 800;
+      }
+
+      .creature-shadow {
+        border-radius: 999px;
+        height: 10px;
+        margin-top: 10px;
+        opacity: 0.18;
+        width: 78px;
+      }
+
+      .howee-copy {
+        flex: 1;
+      }
+
+      .state-label {
+        font-size: 17px;
+        font-weight: 800;
+        margin-bottom: 4px;
+      }
+
+      .score {
+        color: #2d2a35;
+        font-size: 40px;
+        font-weight: 900;
+        margin-bottom: 8px;
+      }
+
+      .mood {
+        color: #5b5868;
+        font-size: 16px;
+        line-height: 22px;
+      }
+
+      .signals {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 24px;
+      }
+
+      .signal {
+        background: #ffffff;
+        border: 1px solid #eaddea;
+        border-radius: 999px;
+        color: #6e6a7d;
+        font-size: 13px;
+        font-weight: 700;
+        padding: 7px 12px;
+      }
+
+      .section-header {
+        margin-bottom: 14px;
+      }
+
+      h2 {
+        font-size: 23px;
+        font-weight: 800;
+      }
+
+      .section-note {
+        color: #7e7b8a;
+        font-size: 15px;
+        line-height: 21px;
+        margin-top: 4px;
+      }
+
+      .controls {
+        display: grid;
+        gap: 12px;
+      }
+
+      .card {
+        background: #ffffff;
+        border: 1px solid #eaddea;
+        border-radius: 20px;
+        padding: 16px;
+      }
+
+      .control-row,
+      .toggle-row {
+        align-items: center;
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .control-label {
+        color: #2d2a35;
+        font-size: 15px;
+        font-weight: 800;
+      }
+
+      .control-value {
+        color: #7e7b8a;
+        font-size: 14px;
+        margin-top: 4px;
+      }
+
+      .stepper {
+        display: flex;
+        gap: 8px;
+      }
+
+      .step-button {
+        align-items: center;
+        background: #dce9ff;
+        border-radius: 14px;
+        color: #5f79d6;
+        display: flex;
+        font-size: 24px;
+        font-weight: 700;
+        height: 42px;
+        justify-content: center;
+        line-height: 27px;
+        width: 42px;
+      }
+
+      .segment-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 12px;
+      }
+
+      .segment {
+        background: #f7f1f7;
+        border-radius: 14px;
+        color: #6e6a7d;
+        font-size: 14px;
+        font-weight: 700;
+        padding: 10px 12px;
+      }
+
+      .segment.active {
+        background: #f0c6d6;
+        color: #2d2a35;
+      }
+
+      .toggle {
+        background: #e9e0eb;
+        border-radius: 999px;
+        height: 32px;
+        padding: 3px;
+        width: 58px;
+      }
+
+      .toggle.active {
+        background: #f0c6d6;
+      }
+
+      .toggle-knob {
+        background: #ffffff;
+        border-radius: 999px;
+        height: 26px;
+        transform: translateX(0);
+        transition: transform 120ms ease;
+        width: 26px;
+      }
+
+      .toggle.active .toggle-knob {
+        transform: translateX(26px);
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <div>
+          <h1>Howee</h1>
+          <p class="subtitle">A tiny mirror for your real state.</p>
+        </div>
+        <div class="mode-switch">
+          <button class="mode-button active" data-mode="live">Live</button>
+          <button class="mode-button" data-mode="daily">Daily</button>
+        </div>
+      </header>
+
+      <section class="howee-panel" id="howeePanel">
+        <div class="panel-orb-one"></div>
+        <div class="panel-orb-two"></div>
+        <div class="creature-wrap">
+          <div class="creature-body" id="creatureBody">
+            <div class="creature-ear left"></div>
+            <div class="creature-ear right"></div>
+            <div class="creature-face" id="creatureFace">-_-</div>
+          </div>
+          <div class="creature-shadow" id="creatureShadow"></div>
+        </div>
+        <div class="howee-copy">
+          <p class="state-label" id="stateLabel">Drained</p>
+          <p class="score"><span id="score">34</span>/100</p>
+          <p class="mood" id="mood">Howee needs water, food, rest, or a softer pace.</p>
+        </div>
+      </section>
+
+      <section class="signals" id="signals"></section>
+
+      <section class="section-header">
+        <h2 id="sectionTitle">Update right now</h2>
+        <p class="section-note" id="sectionNote">Change any input whenever your day shifts.</p>
+      </section>
+
+      <section class="controls" id="controls"></section>
+    </main>
+
+    <script>
+      const state = {
+        mode: "live",
+        waterGlasses: 3,
+        stress: "medium",
+        ateToday: true,
+        food: "okay",
+        anxiety: "mild",
+        sleepHours: 6,
+        rested: false,
+        workHours: 8,
+        energyDrinks: 1,
+      };
+
+      const stressOptions = [
+        ["Calm", "low"],
+        ["Tense", "medium"],
+        ["Heavy", "high"],
+        ["Crisis", "crisis"],
+      ];
+      const foodOptions = [
+        ["No food", "none"],
+        ["Good", "good"],
+        ["Okay", "okay"],
+        ["Rough", "bad"],
+      ];
+      const anxietyOptions = [
+        ["No", "none"],
+        ["A bit", "mild"],
+        ["A lot", "strong"],
+      ];
+
+      const stressImpact = { low: 10, medium: -4, high: -18, crisis: -30 };
+      const foodImpact = { none: -18, good: 14, okay: 2, bad: -10 };
+      const anxietyImpact = { none: 8, mild: -6, strong: -18 };
+
+      function clamp(value, min, max) {
+        return Math.min(Math.max(value, min), max);
+      }
+
+      function calculateScore() {
+        const sleepScore = state.sleepHours >= 7 ? 16 : state.sleepHours >= 6 ? 2 : -16;
+        const waterScore = state.waterGlasses >= 7 ? 14 : state.waterGlasses >= 4 ? 4 : -10;
+        const workScore = state.workHours <= 6 ? 8 : state.workHours <= 8 ? -2 : -16;
+        const energyScore = state.energyDrinks === 0 ? 5 : -8 * state.energyDrinks;
+        const restScore = state.rested ? 12 : -10;
+        const mealScore = state.ateToday ? foodImpact[state.food] : -24;
+        return clamp(
+          52 +
+            sleepScore +
+            waterScore +
+            workScore +
+            energyScore +
+            restScore +
+            mealScore +
+            stressImpact[state.stress] +
+            anxietyImpact[state.anxiety],
+          0,
+          100,
+        );
+      }
+
+      function getHowee(score) {
+        if (score >= 78) {
+          return {
+            label: "Steady",
+            face: "^-^",
+            mood: "Howee feels grounded and cared for.",
+            color: "#5f79d6",
+            background: "#dce9ff",
+            body: "#f8d8e6",
+          };
+        }
+        if (score >= 56) {
+          return {
+            label: "Holding up",
+            face: "o_o",
+            mood: "Howee is okay, but the day is taking energy.",
+            color: "#9073c7",
+            background: "#efe1fb",
+            body: "#ffe9a8",
+          };
+        }
+        if (score >= 34) {
+          return {
+            label: "Drained",
+            face: "-_-",
+            mood: "Howee needs water, food, rest, or a softer pace.",
+            color: "#c06f82",
+            background: "#f7dce7",
+            body: "#dce9ff",
+          };
+        }
+        return {
+          label: "Overloaded",
+          face: "x_x",
+          mood: "Howee is showing a real overload signal.",
+          color: "#9d596b",
+          background: "#f4cdd8",
+          body: "#ffe9a8",
+        };
+      }
+
+      function getSignals() {
+        const signals = [];
+        if (state.sleepHours < 7) signals.push("Low sleep");
+        if (state.waterGlasses < 4) signals.push("Needs water");
+        if (!state.ateToday || state.food === "none") signals.push("No meal logged");
+        if (state.food === "bad") signals.push("Rough food");
+        if (state.stress === "high" || state.stress === "crisis") signals.push("High stress");
+        if (state.anxiety === "strong") signals.push("Anxious");
+        if (!state.rested) signals.push("No rest");
+        if (state.workHours > 8) signals.push("Long workday");
+        if (state.energyDrinks > 0) signals.push("Caffeine load");
+        return signals.length ? signals : ["Good baseline"];
+      }
+
+      function stepper(label, key, suffix, min, max) {
+        return `
+          <div class="card control-row">
+            <div>
+              <div class="control-label">${label}</div>
+              <div class="control-value">${state[key]} ${suffix}</div>
+            </div>
+            <div class="stepper">
+              <button class="step-button" data-step="${key}" data-delta="-1">-</button>
+              <button class="step-button" data-step="${key}" data-delta="1">+</button>
+            </div>
+          </div>
+        `;
+      }
+
+      function segmented(label, key, options) {
+        return `
+          <div class="card">
+            <div class="control-label">${label}</div>
+            <div class="segment-group">
+              ${options
+                .map(
+                  ([labelText, value]) =>
+                    `<button class="segment ${state[key] === value ? "active" : ""}" data-set="${key}" data-value="${value}">${labelText}</button>`,
+                )
+                .join("")}
+            </div>
+          </div>
+        `;
+      }
+
+      function toggle(label, key) {
+        return `
+          <button class="card toggle-row" data-toggle="${key}">
+            <span class="control-label">${label}</span>
+            <span class="toggle ${state[key] ? "active" : ""}">
+              <span class="toggle-knob"></span>
+            </span>
+          </button>
+        `;
+      }
+
+      function render() {
+        document.querySelectorAll(".mode-button").forEach((button) => {
+          button.classList.toggle("active", button.dataset.mode === state.mode);
+        });
+        document.getElementById("sectionTitle").textContent =
+          state.mode === "live" ? "Update right now" : "Daily check-in";
+        document.getElementById("sectionNote").textContent =
+          state.mode === "live"
+            ? "Change any input whenever your day shifts."
+            : "Fill it once to summarize the whole day.";
+
+        const score = calculateScore();
+        const howee = getHowee(score);
+        document.getElementById("howeePanel").style.background = howee.background;
+        document.getElementById("creatureBody").style.color = howee.color;
+        document.getElementById("creatureBody").style.background = howee.body;
+        document.getElementById("creatureShadow").style.background = howee.color;
+        document.getElementById("creatureFace").textContent = howee.face;
+        document.getElementById("stateLabel").textContent = howee.label;
+        document.getElementById("stateLabel").style.color = howee.color;
+        document.getElementById("score").textContent = String(score);
+        document.getElementById("mood").textContent = howee.mood;
+        document.getElementById("signals").innerHTML = getSignals()
+          .map((signal) => `<span class="signal">${signal}</span>`)
+          .join("");
+
+        document.getElementById("controls").innerHTML = [
+          stepper("Water", "waterGlasses", "glasses", 0, 12),
+          stepper("Sleep", "sleepHours", "hours", 0, 14),
+          stepper("Work", "workHours", "hours", 0, 16),
+          stepper("Energy drinks", "energyDrinks", "today", 0, 6),
+          segmented("Work/life stress", "stress", stressOptions),
+          toggle("Ate today", "ateToday"),
+          segmented("Food quality", "food", foodOptions),
+          segmented("Anxiety", "anxiety", anxietyOptions),
+          toggle("Had real rest", "rested"),
+        ].join("");
+
+        document.querySelectorAll("[data-step]").forEach((button) => {
+          button.addEventListener("click", () => {
+            const limits = {
+              waterGlasses: [0, 12],
+              sleepHours: [0, 14],
+              workHours: [0, 16],
+              energyDrinks: [0, 6],
+            };
+            const key = button.dataset.step;
+            const [min, max] = limits[key];
+            state[key] = clamp(state[key] + Number(button.dataset.delta), min, max);
+            render();
+          });
+        });
+        document.querySelectorAll("[data-set]").forEach((button) => {
+          button.addEventListener("click", () => {
+            state[button.dataset.set] = button.dataset.value;
+            render();
+          });
+        });
+        document.querySelectorAll("[data-toggle]").forEach((button) => {
+          button.addEventListener("click", () => {
+            const key = button.dataset.toggle;
+            state[key] = !state[key];
+            render();
+          });
+        });
+      }
+
+      document.querySelectorAll(".mode-button").forEach((button) => {
+        button.addEventListener("click", () => {
+          state.mode = button.dataset.mode;
+          render();
+        });
+      });
+
+      render();
+    </script>
+  </body>
+</html>
