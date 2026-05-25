@@ -126,9 +126,9 @@ function getHoweeState(score: number) {
       label: "Steady",
       face: "^-^",
       mood: "Howee feels grounded and cared for.",
-      color: "#5f79d6",
+      color: "#4f73b9",
       background: "#dce9ff",
-      body: "#f8d8e6",
+      body: "#fff1b8",
     };
   }
 
@@ -137,8 +137,8 @@ function getHoweeState(score: number) {
       label: "Holding up",
       face: "o_o",
       mood: "Howee is okay, but the day is taking energy.",
-      color: "#9073c7",
-      background: "#efe1fb",
+      color: "#6f7f73",
+      background: "#eef0dd",
       body: "#ffe9a8",
     };
   }
@@ -148,9 +148,9 @@ function getHoweeState(score: number) {
       label: "Drained",
       face: "-_-",
       mood: "Howee needs water, food, rest, or a softer pace.",
-      color: "#c06f82",
-      background: "#f7dce7",
-      body: "#dce9ff",
+      color: "#6f6d84",
+      background: "#e6ecf7",
+      body: "#fff1b8",
     };
   }
 
@@ -158,9 +158,9 @@ function getHoweeState(score: number) {
     label: "Overloaded",
     face: "x_x",
     mood: "Howee is showing a real overload signal.",
-    color: "#9d596b",
-    background: "#f4cdd8",
-    body: "#ffe9a8",
+    color: "#5f667a",
+    background: "#dfe7f2",
+    body: "#fff1b8",
   };
 }
 
@@ -404,7 +404,7 @@ export default function App() {
             label="Work/life stress"
             value={checkIn.stress}
             options={stressOptions}
-            tone="pink"
+            tone="lilac"
             onChange={(value) => update("stress", value)}
           />
           <Toggle
@@ -444,20 +444,20 @@ const toneStyles = StyleSheet.create({
     backgroundColor: "#dce9ff",
   },
   pink: {
-    backgroundColor: "#f7dce7",
+    backgroundColor: "#f3e1e7",
   },
   yellow: {
-    backgroundColor: "#ffe9a8",
+    backgroundColor: "#fff1b8",
   },
   lilac: {
-    backgroundColor: "#efe1fb",
+    backgroundColor: "#e9e5f4",
   },
 });
 
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: "#edf4ff",
+    backgroundColor: "#eef3f8",
   },
   page: {
     paddingBottom: 36,
@@ -494,7 +494,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   modeButtonActive: {
-    backgroundColor: "#f0c6d6",
+    backgroundColor: "#dce9ff",
   },
   modeText: {
     color: "#7e7b8a",
@@ -665,14 +665,14 @@ const styles = StyleSheet.create({
   },
   stepButton: {
     alignItems: "center",
-    backgroundColor: "#dce9ff",
+    backgroundColor: "rgba(255, 255, 255, 0.62)",
     borderRadius: 14,
     height: 42,
     justifyContent: "center",
     width: 42,
   },
   stepText: {
-    color: "#5f79d6",
+    color: "#4f73b9",
     fontSize: 24,
     fontWeight: "700",
     lineHeight: 27,
@@ -693,7 +693,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   segmentActive: {
-    backgroundColor: "#f0c6d6",
+    backgroundColor: "rgba(255, 255, 255, 0.72)",
   },
   segmentText: {
     color: "#6e6a7d",
@@ -717,7 +717,7 @@ const styles = StyleSheet.create({
     width: 58,
   },
   toggleActive: {
-    backgroundColor: "#f0c6d6",
+    backgroundColor: "#dce9ff",
   },
   toggleKnob: {
     backgroundColor: "#ffffff",
