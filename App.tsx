@@ -1,6 +1,7 @@
 import { StatusBar } from "expo-status-bar";
 import { useMemo, useState } from "react";
 import {
+  Image,
   Pressable,
   SafeAreaView,
   ScrollView,
@@ -13,6 +14,7 @@ type Mode = "live" | "daily";
 type StressLevel = "low" | "medium" | "high" | "crisis";
 type FoodQuality = "none" | "good" | "okay" | "bad";
 type AnxietyLevel = "none" | "mild" | "strong";
+type HeroId = "floof" | "noodle" | "zuzu" | "peb" | "kumo";
 
 type CheckIn = {
   waterGlasses: number;
@@ -56,6 +58,44 @@ const anxietyOptions: Array<{ label: string; value: AnxietyLevel }> = [
   { label: "No", value: "none" },
   { label: "A bit", value: "mild" },
   { label: "A lot", value: "strong" },
+];
+
+const heroes: Array<{
+  id: HeroId;
+  name: string;
+  summary: string;
+  source: number;
+}> = [
+  {
+    id: "floof",
+    name: "Floof",
+    summary: "Soft, gentle, and dreamy.",
+    source: require("./assets/heroes/floof.png"),
+  },
+  {
+    id: "noodle",
+    name: "Noodle",
+    summary: "Long, squishy, and lovable.",
+    source: require("./assets/heroes/noodle.png"),
+  },
+  {
+    id: "zuzu",
+    name: "Zuzu",
+    summary: "Bright, creative, a little chaotic.",
+    source: require("./assets/heroes/zuzu.png"),
+  },
+  {
+    id: "peb",
+    name: "Peb",
+    summary: "Quiet, solid, and deeply caring.",
+    source: require("./assets/heroes/peb.png"),
+  },
+  {
+    id: "kumo",
+    name: "Kumo",
+    summary: "Grounded, patient, loves routine.",
+    source: require("./assets/heroes/kumo.png"),
+  },
 ];
 
 const stressImpact: Record<StressLevel, number> = {
@@ -287,10 +327,15 @@ function Toggle({
 export default function App() {
   const [mode, setMode] = useState<Mode>("live");
   const [checkIn, setCheckIn] = useState(initialCheckIn);
+  const [heroId, setHeroId] = useState<HeroId>("zuzu");
 
   const score = useMemo(() => calculateScore(checkIn), [checkIn]);
   const howee = useMemo(() => getHoweeState(score), [score]);
   const signals = useMemo(() => getSignals(checkIn), [checkIn]);
+  const selectedHero = useMemo(
+    () => heroes.find((hero) => hero.id === heroId) ?? heroes[0],
+    [heroId],
+  );
 
   const update = <Key extends keyof CheckIn>(key: Key, value: CheckIn[Key]) => {
     setCheckIn((current) => ({ ...current, [key]: value }));
@@ -324,23 +369,40 @@ export default function App() {
           <View style={styles.panelOrbOne} />
           <View style={styles.panelOrbTwo} />
           <View style={styles.creatureWrap}>
-            <View
-              style={[
-                styles.creatureBody,
-                { backgroundColor: howee.body, borderColor: howee.color },
-              ]}
-            >
-              <View style={[styles.creatureEar, styles.creatureEarLeft]} />
-              <View style={[styles.creatureEar, styles.creatureEarRight]} />
-              <Text style={[styles.creatureFace, { color: howee.color }]}>{howee.face}</Text>
-            </View>
+            <Image source={selectedHero.source} style={styles.creatureImage} resizeMode="contain" />
             <View style={[styles.creatureShadow, { backgroundColor: howee.color }]} />
           </View>
           <View style={styles.howeeCopy}>
+            <Text style={styles.heroName}>{selectedHero.name}</Text>
             <Text style={[styles.stateLabel, { color: howee.color }]}>{howee.label}</Text>
             <Text style={styles.score}>{score}/100</Text>
             <Text style={styles.mood}>{howee.mood}</Text>
           </View>
+        </View>
+
+        <View style={styles.heroPicker}>
+          <Text style={styles.heroPickerTitle}>Choose your Howee</Text>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.heroList}
+          >
+            {heroes.map((hero) => {
+              const active = hero.id === heroId;
+
+              return (
+                <Pressable
+                  key={hero.id}
+                  style={[styles.heroCard, active && styles.heroCardActive]}
+                  onPress={() => setHeroId(hero.id)}
+                >
+                  <Image source={hero.source} style={styles.heroThumb} resizeMode="contain" />
+                  <Text style={styles.heroCardName}>{hero.name}</Text>
+                  <Text style={styles.heroCardSummary}>{hero.summary}</Text>
+                </Pressable>
+              );
+            })}
+          </ScrollView>
         </View>
 
         <View style={styles.signalWrap}>
@@ -538,6 +600,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: 220,
   },
+  creatureImage: {
+    height: 190,
+    width: 190,
+  },
   creatureBody: {
     alignItems: "center",
     borderTopLeftRadius: 98,
@@ -581,6 +647,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     zIndex: 1,
   },
+  heroName: {
+    color: "#2d2a35",
+    fontSize: 18,
+    fontWeight: "900",
+    marginBottom: 4,
+  },
   stateLabel: {
     fontSize: 17,
     fontWeight: "800",
@@ -596,6 +668,54 @@ const styles = StyleSheet.create({
     color: "#5b5868",
     fontSize: 16,
     lineHeight: 22,
+    textAlign: "center",
+  },
+  heroPicker: {
+    backgroundColor: "#ffffff",
+    borderRadius: 24,
+    marginBottom: 16,
+    paddingBottom: 14,
+    paddingTop: 16,
+  },
+  heroPickerTitle: {
+    color: "#2d2a35",
+    fontSize: 18,
+    fontWeight: "900",
+    marginBottom: 12,
+    paddingHorizontal: 16,
+  },
+  heroList: {
+    gap: 10,
+    paddingHorizontal: 16,
+  },
+  heroCard: {
+    backgroundColor: "#f4f7fb",
+    borderColor: "transparent",
+    borderRadius: 20,
+    borderWidth: 2,
+    padding: 10,
+    width: 126,
+  },
+  heroCardActive: {
+    backgroundColor: "#dce9ff",
+    borderColor: "#4f73b9",
+  },
+  heroThumb: {
+    alignSelf: "center",
+    height: 78,
+    marginBottom: 8,
+    width: 78,
+  },
+  heroCardName: {
+    color: "#2d2a35",
+    fontSize: 14,
+    fontWeight: "900",
+  },
+  heroCardSummary: {
+    color: "#6e6a7d",
+    fontSize: 11,
+    lineHeight: 15,
+    marginTop: 3,
   },
   signalWrap: {
     flexDirection: "row",

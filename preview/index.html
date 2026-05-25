@@ -127,43 +127,11 @@
         width: 220px;
       }
 
-      .creature-body {
-        align-items: center;
-        background: #fff1b8;
-        border: 4px solid currentColor;
-        border-bottom-left-radius: 88px;
-        border-bottom-right-radius: 58px;
-        border-top-left-radius: 98px;
-        border-top-right-radius: 76px;
-        display: flex;
-        height: 178px;
-        justify-content: center;
-        position: relative;
-        transform: rotate(-3deg);
-        width: 180px;
-      }
-
-      .creature-ear {
-        background: #ffffff;
-        border-radius: 999px;
-        height: 20px;
-        opacity: 0.8;
-        position: absolute;
-        top: 34px;
-        width: 20px;
-      }
-
-      .creature-ear.left {
-        left: 44px;
-      }
-
-      .creature-ear.right {
-        right: 44px;
-      }
-
-      .creature-face {
-        font-size: 42px;
-        font-weight: 800;
+      .creature-image {
+        display: block;
+        height: 190px;
+        object-fit: contain;
+        width: 190px;
       }
 
       .creature-shadow {
@@ -186,6 +154,13 @@
         margin-bottom: 4px;
       }
 
+      .hero-name {
+        color: #2d2a35;
+        font-size: 18px;
+        font-weight: 900;
+        margin-bottom: 4px;
+      }
+
       .score {
         color: #2d2a35;
         font-size: 54px;
@@ -197,6 +172,71 @@
         color: #5b5868;
         font-size: 16px;
         line-height: 22px;
+        text-align: center;
+      }
+
+      .hero-picker {
+        background: #ffffff;
+        border-radius: 24px;
+        margin-bottom: 16px;
+        padding: 16px 0 14px;
+      }
+
+      .hero-picker-title {
+        color: #2d2a35;
+        font-size: 18px;
+        font-weight: 900;
+        padding: 0 16px 12px;
+      }
+
+      .hero-list {
+        display: flex;
+        gap: 10px;
+        overflow-x: auto;
+        padding: 0 16px 4px;
+        scrollbar-width: none;
+      }
+
+      .hero-list::-webkit-scrollbar {
+        display: none;
+      }
+
+      .hero-card {
+        background: #f4f7fb;
+        border: 2px solid transparent;
+        border-radius: 20px;
+        color: inherit;
+        flex: 0 0 126px;
+        padding: 10px;
+        text-align: left;
+      }
+
+      .hero-card.active {
+        background: #dce9ff;
+        border-color: #4f73b9;
+      }
+
+      .hero-thumb {
+        display: block;
+        height: 78px;
+        margin: 0 auto 8px;
+        object-fit: contain;
+        width: 78px;
+      }
+
+      .hero-card-name {
+        color: #2d2a35;
+        display: block;
+        font-size: 14px;
+        font-weight: 900;
+      }
+
+      .hero-card-summary {
+        color: #6e6a7d;
+        display: block;
+        font-size: 11px;
+        line-height: 15px;
+        margin-top: 3px;
       }
 
       .signals {
@@ -371,18 +411,20 @@
         <div class="panel-orb-one"></div>
         <div class="panel-orb-two"></div>
         <div class="creature-wrap">
-          <div class="creature-body" id="creatureBody">
-            <div class="creature-ear left"></div>
-            <div class="creature-ear right"></div>
-            <div class="creature-face" id="creatureFace">-_-</div>
-          </div>
+          <img class="creature-image" id="creatureImage" src="assets/heroes/zuzu.png" alt="Zuzu" />
           <div class="creature-shadow" id="creatureShadow"></div>
         </div>
         <div class="howee-copy">
+          <p class="hero-name" id="heroName">Zuzu</p>
           <p class="state-label" id="stateLabel">Drained</p>
           <p class="score"><span id="score">34</span>/100</p>
           <p class="mood" id="mood">Howee needs water, food, rest, or a softer pace.</p>
         </div>
+      </section>
+
+      <section class="hero-picker">
+        <div class="hero-picker-title">Choose your Howee</div>
+        <div class="hero-list" id="heroList"></div>
       </section>
 
       <section class="signals" id="signals"></section>
@@ -398,6 +440,7 @@
     <script>
       const state = {
         mode: "live",
+        heroId: "zuzu",
         waterGlasses: 3,
         stress: "medium",
         ateToday: true,
@@ -425,6 +468,39 @@
         ["No", "none"],
         ["A bit", "mild"],
         ["A lot", "strong"],
+      ];
+
+      const heroes = [
+        {
+          id: "floof",
+          name: "Floof",
+          summary: "Soft, gentle, and dreamy.",
+          src: "assets/heroes/floof.png",
+        },
+        {
+          id: "noodle",
+          name: "Noodle",
+          summary: "Long, squishy, and lovable.",
+          src: "assets/heroes/noodle.png",
+        },
+        {
+          id: "zuzu",
+          name: "Zuzu",
+          summary: "Bright, creative, a little chaotic.",
+          src: "assets/heroes/zuzu.png",
+        },
+        {
+          id: "peb",
+          name: "Peb",
+          summary: "Quiet, solid, and deeply caring.",
+          src: "assets/heroes/peb.png",
+        },
+        {
+          id: "kumo",
+          name: "Kumo",
+          summary: "Grounded, patient, loves routine.",
+          src: "assets/heroes/kumo.png",
+        },
       ];
 
       const stressImpact = { low: 10, medium: -4, high: -18, crisis: -30 };
@@ -567,17 +643,30 @@
 
         const score = calculateScore();
         const howee = getHowee(score);
+        const selectedHero = heroes.find((hero) => hero.id === state.heroId) || heroes[0];
         document.getElementById("howeePanel").style.background = howee.background;
-        document.getElementById("creatureBody").style.color = howee.color;
-        document.getElementById("creatureBody").style.background = howee.body;
+        document.getElementById("creatureImage").src = selectedHero.src;
+        document.getElementById("creatureImage").alt = selectedHero.name;
         document.getElementById("creatureShadow").style.background = howee.color;
-        document.getElementById("creatureFace").textContent = howee.face;
+        document.getElementById("heroName").textContent = selectedHero.name;
         document.getElementById("stateLabel").textContent = howee.label;
         document.getElementById("stateLabel").style.color = howee.color;
         document.getElementById("score").textContent = String(score);
         document.getElementById("mood").textContent = howee.mood;
         document.getElementById("signals").innerHTML = getSignals()
           .map((signal) => `<span class="signal">${signal}</span>`)
+          .join("");
+
+        document.getElementById("heroList").innerHTML = heroes
+          .map(
+            (hero) => `
+              <button class="hero-card ${hero.id === state.heroId ? "active" : ""}" data-hero="${hero.id}">
+                <img class="hero-thumb" src="${hero.src}" alt="${hero.name}" />
+                <span class="hero-card-name">${hero.name}</span>
+                <span class="hero-card-summary">${hero.summary}</span>
+              </button>
+            `,
+          )
           .join("");
 
         document.getElementById("controls").innerHTML = [
@@ -616,6 +705,12 @@
           button.addEventListener("click", () => {
             const key = button.dataset.toggle;
             state[key] = !state[key];
+            render();
+          });
+        });
+        document.querySelectorAll("[data-hero]").forEach((button) => {
+          button.addEventListener("click", () => {
+            state.heroId = button.dataset.hero;
             render();
           });
         });
